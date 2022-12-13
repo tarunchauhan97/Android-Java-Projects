@@ -87,12 +87,29 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+        } else {
+            funJustPermission();
         }
 
+        getWeatherInfo("Mumbai");
+
+
+    }
+
+    void funJustPermission() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (location == null) {
+            Toast.makeText(this, "Location Null Here", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
         cityName = getCityName(location.getLongitude(), location.getLatitude());
         getWeatherInfo(cityName);
-
+        System.out.println("============================");
         searchIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
 
@@ -149,12 +167,18 @@ public class MainActivity extends AppCompatActivity {
         String baseURL = "http://api.weatherapi.com";
         String url = baseURL + "/v1/forecast.json?key=" + myAPIKey + "&q=" + cityName + "&days=1&aqi=no&alerts=no";
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        System.out.println("=============" + url + "===============");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+
             @Override
             public void onResponse(JSONObject response) {
                 loadingPB.setVisibility(View.GONE);
                 homeRL.setVisibility(View.VISIBLE);
                 weatherRVModalArrayList.clear();
+                System.out.println("============================");
+                System.out.println(response);
+                System.out.println("============================");
 
                 try {
                     String temperature = response.getJSONObject("current").getString("temp_c");
@@ -174,16 +198,23 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject forcastObj = response.getJSONObject("forecast");
                     JSONObject forecast0 = forcastObj.getJSONArray("forecastday").getJSONObject(0);
                     JSONArray hourArray = forecast0.getJSONArray("hour");
-                    for (int i = 0; i <= hourArray.length(); i++) {
+                    if (hourArray != null) {
+                        for (int i = 0; i <= hourArray.length(); i++) {
 
-                        JSONObject hourObj = hourArray.getJSONObject(i);
-                        String time = hourObj.getString("time");
-                        String temper = hourObj.getString("temp_c");
-                        String img = hourObj.getJSONObject("condition").getString("icon");
-                        String wind = hourObj.getString("wind_kph");
-                        weatherRVModalArrayList.add(new WeatherRVModal(time, temper, img, wind));
+                            JSONObject hourObj = hourArray.getJSONObject(i);
+                            String time = hourObj.getString("time");
+                            String temper = hourObj.getString("temp_c");
+                            String img = hourObj.getJSONObject("condition").getString("icon");
+                            String wind = hourObj.getString("wind_kph");
+                            weatherRVModalArrayList.add(new WeatherRVModal(time, temper, img, wind));
+                        }
+                        weatherRVAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(MainActivity.this,
+                                "Please Enter Valid City Name..",
+                                Toast.LENGTH_SHORT).show();
                     }
-                    weatherRVAdapter.notifyDataSetChanged();
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
