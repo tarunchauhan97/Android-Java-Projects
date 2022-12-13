@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject forecast0 = forcastObj.getJSONArray("forecastday").getJSONObject(0);
                     JSONArray hourArray = forecast0.getJSONArray("hour");
                     if (hourArray != null) {
-                        for (int i = 0; i <= hourArray.length(); i++) {
+                        for (int i = 0; i < hourArray.length(); i++) {
 
                             JSONObject hourObj = hourArray.getJSONObject(i);
                             String time = hourObj.getString("time");
@@ -224,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                loadingPB.setVisibility(View.GONE);
                 Toast.makeText(MainActivity.this,
                         "Please Enter Valid City Name..",
                         Toast.LENGTH_SHORT).show();

@@ -70,7 +70,7 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
             windTV = itemView.findViewById(R.id.idTVWindSpeed);
             temperatureTV = itemView.findViewById(R.id.idTVTemperature);
             timeTV = itemView.findViewById(R.id.idTVTime);
-            conditionIV = itemView.findViewById(R.id.idTVCondition);
+            conditionIV = itemView.findViewById(R.id.idIVCondition);
 
         }
     }
