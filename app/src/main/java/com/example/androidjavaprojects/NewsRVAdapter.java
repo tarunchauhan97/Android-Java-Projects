@@ -1,6 +1,7 @@
 package com.example.androidjavaprojects;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +40,21 @@ public class NewsRVAdapter extends RecyclerView.Adapter<NewsRVAdapter.ViewHolder
         holder.titleTV.setText(articles.getTitle());
         Picasso.get().load(articles.getUrlToImage()).into(holder.newsIV);
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
 
+                Intent i = new Intent(context, NewsDetailActivity.class);
+                i.putExtra("title", articles.getTitle());
+                i.putExtra("content", articles.getContent());
+                i.putExtra("desc", articles.getDescription());
+                i.putExtra("image", articles.getUrlToImage());
+                i.putExtra("url", articles.getUrl());
+                context.startActivity(i);
+
+            }
+        });
     }
 
     @Override
@@ -50,8 +64,9 @@ public class NewsRVAdapter extends RecyclerView.Adapter<NewsRVAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView titleTV,subTitleTV;
+        private TextView titleTV, subTitleTV;
         private ImageView newsIV;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
