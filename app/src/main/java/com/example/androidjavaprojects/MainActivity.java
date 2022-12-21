@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements CategoryRVAdapter
                 NewsModal newsModal = response.body();
                 loadingPB.setVisibility(View.GONE);
                 ArrayList<Articles> articles = newsModal.getArticles();
-                for (int i = 0; i <= articles.size(); i++) {
+                for (int i = 0; i < articles.size(); i++) {
                     Articles articleGetI = articles.get(i);
                     articlesArrayList.add(new Articles(articleGetI.getTitle(), articleGetI.getDescription(),
                             articleGetI.getUrlToImage(), articleGetI.getContent(), articleGetI.getUrl()));
