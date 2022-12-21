@@ -7,10 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -41,7 +44,8 @@ public class MainActivity extends AppCompatActivity implements CategoryRVAdapter
         newsRV.setAdapter(newsRVAdapter);
         categoryRV.setAdapter(categoryRVAdapter);
         getCategories();
-
+        getNews("All");
+        newsRVAdapter.notifyDataSetChanged();
     }
 
     private void getCategories() {
@@ -77,12 +81,40 @@ public class MainActivity extends AppCompatActivity implements CategoryRVAdapter
 
         RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
         Call<NewsModal> call;
+        if (category.equals("All")) {
+            call = retrofitAPI.getAllNews(allNewsURL);
+        } else {
+            call = retrofitAPI.getNewsByCategory(categoryURL);
+        }
+
+        call.enqueue(new Callback<NewsModal>() {
+            @Override
+            public void onResponse(Call<NewsModal> call, Response<NewsModal> response) {
+                NewsModal newsModal = response.body();
+                loadingPB.setVisibility(View.GONE);
+                ArrayList<Articles> articles = newsModal.getArticles();
+                for (int i = 0; i <= articles.size(); i++) {
+                    Articles articleGetI = articles.get(i);
+                    articlesArrayList.add(new Articles(articleGetI.getTitle(), articleGetI.getDescription(),
+                            articleGetI.getUrlToImage(), articleGetI.getContent(), articleGetI.getUrl()));
+
+                }
+                newsRVAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<NewsModal> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Failed to Get News", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
-
     @Override
     public void onCategoryClick(int position) {
+        String category = categoryRVModalArrayList.get(position).getCategory();
+
+        getNews(category);
 
     }
 }
