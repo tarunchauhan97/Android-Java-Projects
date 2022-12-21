@@ -66,11 +66,9 @@ public class CategoryRVAdapter extends RecyclerView.Adapter<CategoryRVAdapter.Vi
 
         public ViewHolder(@NonNull View itemView) {
 
-
             super(itemView);
             categoryIV = itemView.findViewById(R.id.idIVCategory);
             categoryTV = itemView.findViewById(R.id.idTVCategories);
-
 
         }
     }
