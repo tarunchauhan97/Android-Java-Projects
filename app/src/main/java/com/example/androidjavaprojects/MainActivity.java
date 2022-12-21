@@ -5,13 +5,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity implements CategoryRVAdapter.CategoryClickInterface {
 
-    //f9a1445c523b4aa88f383f6dc0fc408e
+    private final String myAPIKey = "f9a1445c523b4aa88f383f6dc0fc408e";
+    private final String newsBaseURL = "https://newsapi.org/";
     private RecyclerView newsRV, categoryRV;
     private ProgressBar loadingPB;
     private ArrayList<Articles> articlesArrayList;
@@ -59,6 +65,21 @@ public class MainActivity extends AppCompatActivity implements CategoryRVAdapter
         categoryRVModalArrayList.add(new CategoryRVModal("Health", catHealth));
         categoryRVAdapter.notifyDataSetChanged();
     }
+
+    private void getNews(String category) {
+
+        loadingPB.setVisibility(View.VISIBLE);
+        articlesArrayList.clear();
+        String categoryURL = newsBaseURL + "v2/top-headlines?country=in&category=" + category + "&apiKey=" + myAPIKey;
+        String allNewsURL = newsBaseURL + "v2/top-headlines?country=in&excludeDomains=stackoverflow.com&sortBy=publishedAt&language=en&apiKey=" + myAPIKey;
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(newsBaseURL).addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
+        Call<NewsModal> call;
+
+    }
+
 
     @Override
     public void onCategoryClick(int position) {
