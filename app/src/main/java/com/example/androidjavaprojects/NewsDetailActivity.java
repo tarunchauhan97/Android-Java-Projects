@@ -40,7 +40,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         readNewsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse(content));
 //                i.setData(Uri.parse(url));
                 startActivity(i);
             }
