@@ -17,6 +17,13 @@ public class MainViewModel extends ViewModel {
     public MainViewModel() {
         mProgressMutableData.postValue(View.INVISIBLE);
         mDrinksMutableData.postValue("");
+
+    }
+
+    public void suggestNewDrink() {
+
+
+
     }
 
     public LiveData<Integer> getProgress() {
