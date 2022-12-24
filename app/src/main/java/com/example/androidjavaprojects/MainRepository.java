@@ -17,7 +17,7 @@ public class MainRepository {
 
     }
 
-    private void suggestNewDrink() {
+    public void suggestNewDrink(IDrinkCallback drinkCallback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         //Before executing background task
@@ -29,13 +29,25 @@ public class MainRepository {
                 try {
                     Thread.sleep(1000); // Mimic server request / long execution
                     String drinkName = drinksListRemote[new Random().nextInt(drinksListRemote.length)];
-
+                    drinkCallback.onDrinkSuggested(drinkName);
 
                 } catch (InterruptedException e) {
+                    drinkCallback.onErrorOccurred();
+                    e.printStackTrace();
+                }
+                catch (Exception e){
+                    drinkCallback.onErrorOccurred();
                     e.printStackTrace();
                 }
             }
         });
     }
+
+    public interface IDrinkCallback {
+        void onDrinkSuggested(String drinkName);
+
+        void onErrorOccurred();
+    }
+
 
 }

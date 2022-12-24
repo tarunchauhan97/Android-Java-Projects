@@ -13,16 +13,29 @@ public class MainViewModel extends ViewModel {
 
     MutableLiveData<Integer> mProgressMutableData = new MutableLiveData<>();
     MutableLiveData<String> mDrinksMutableData = new MutableLiveData<>();
+    MainRepository mMainRepository;
 
     public MainViewModel() {
         mProgressMutableData.postValue(View.INVISIBLE);
         mDrinksMutableData.postValue("");
-
+        mMainRepository = new MainRepository();
     }
 
     public void suggestNewDrink() {
+        mProgressMutableData.postValue(View.VISIBLE);
+        mMainRepository.suggestNewDrink(new MainRepository.IDrinkCallback() {
+            @Override
+            public void onDrinkSuggested(String drinkName) {
+                mProgressMutableData.postValue(View.INVISIBLE);
+                mDrinksMutableData.postValue(drinkName);
+            }
 
-
+            @Override
+            public void onErrorOccurred() {
+                mProgressMutableData.postValue(View.INVISIBLE);
+                //show toast
+            }
+        });
 
     }
 
@@ -33,6 +46,5 @@ public class MainViewModel extends ViewModel {
     public LiveData<String> getDrink() {
         return mDrinksMutableData;
     }
-
 
 }
