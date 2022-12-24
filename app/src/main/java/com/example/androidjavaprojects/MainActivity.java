@@ -16,7 +16,10 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    String[] drinksList = {"Mint Margarita", "Spiking coffee", "Sweet Bananas", "Tomato Tang", "Apple Berry Smoothie"};
+    String[] drinksListRemote = {"Mint Margarita", "Spiking coffee", "Sweet Bananas",
+            "Tomato Tang", "Apple Berry Smoothie",
+            "Coding Reel Coffee"
+    };
 
     TextView tvDrinkName;
     ProgressBar progressBar;
@@ -33,15 +36,14 @@ public class MainActivity extends AppCompatActivity {
         bGetDrink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                suggestDrink();
+                suggestNewDrink();
             }
         });
     }
 
-    private void suggestDrink() {
+    private void suggestNewDrink() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        final String[] drinkName = {""};
+
         //Before executing background task
         progressBar.setVisibility(View.VISIBLE);
 
@@ -53,20 +55,28 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     Thread.sleep(1000); // Mimic server request / long execution
+                    String drinkName = drinksListRemote[new Random().nextInt(drinksListRemote.length)];
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvDrinkName.setText(drinkName);
+                            progressBar.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                drinkName[0] = drinksList[new Random().nextInt(drinksList.length)];
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        //UI Thread work here
-                        tvDrinkName.setText(drinkName[0]);
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
+//                drinkName[0] = drinksListRemote[new Random().nextInt(drinksListRemote.length)];
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //UI Thread work here
+//                        tvDrinkName.setText(drinkName[0]);
+//                        progressBar.setVisibility(View.INVISIBLE);
+//                    }
+//                });
             }
         });
     }
